@@ -1,0 +1,3 @@
+[submodule "ai-career-counsellor/backend"]
+	path = ai-career-counsellor/backend
+	url = https://github.com/dhruvalvaishnav/backend.git
