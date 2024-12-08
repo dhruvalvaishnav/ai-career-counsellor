@@ -1,0 +1,24 @@
+# Java
+/target
+*.class
+*.jar
+
+# Maven
+*.log
+*.iml
+.idea/
+
+# Kafka
+data/
+logs/
+
+# Node.js (Frontend)
+node_modules/
+build/
+
+# Docker
+*.pid
+.env
+
+# General
+.DS_Store
