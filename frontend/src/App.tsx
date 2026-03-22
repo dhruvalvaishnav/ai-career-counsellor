@@ -1,11 +1,22 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
-import { Box, Button, AppBar, Toolbar, Typography, Container } from '@mui/material'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import CssBaseline from '@mui/material/CssBaseline'
-import Home from './pages/Home'
-import Test from './pages/Test'
-import Results from './pages/Results'
-import History from './pages/History'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+// Pages
+import Home from './pages/Home';
+import Test from './pages/Test';
+import Results from './pages/Results';
+import History from './pages/History';
+
+// Layout components
+import Navbar from './components/layout/Navbar';
+import Sidebar from './components/layout/Sidebar';
+import Footer from './components/layout/Footer';
+
+// Shared components
+import Loader from './components/shared/Loader';
+import Toast from './components/shared/Toast';
 
 const theme = createTheme({
   palette: {
@@ -17,47 +28,60 @@ const theme = createTheme({
   typography: {
     fontFamily: '"DM Sans", "Roboto", sans-serif',
   },
-})
-
-function Navbar() {
-  const { pathname } = useLocation()
-  if (pathname === '/test') return null // hide on test page for focus
-
-  return (
-    <AppBar position="sticky" sx={{ bgcolor: 'rgba(10,10,26,0.95)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.06)', boxShadow: 'none' }}>
-      <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ py: 0.5 }}>
-          <Typography component={Link} to="/"
-            sx={{ flexGrow: 1, textDecoration: 'none', fontWeight: 800, fontSize: '1.15rem', background: 'linear-gradient(135deg, #6C63FF, #00D4AA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontFamily: '"Playfair Display", serif' }}>
-            AI Career Counsellor
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button component={Link} to="/history" sx={{ color: '#8888AA', textTransform: 'none', fontWeight: 600, '&:hover': { color: '#A89CFF' } }}>History</Button>
-            <Button component={Link} to="/test" variant="contained"
-              sx={{ background: 'linear-gradient(135deg, #6C63FF, #5B54E8)', textTransform: 'none', fontWeight: 700, borderRadius: 2, px: 2.5 }}>
-              Take Test
-            </Button>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  )
-}
+});
 
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;600;700&display=swap');`}</style>
+
+      {/* Google Fonts */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;600;700&display=swap');
+      `}</style>
+
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/test" element={<Test />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/history" element={<History />} />
-        </Routes>
+        {/* 
+          Box with minHeight + flexDirection column
+          This makes the footer always stick to the bottom
+          even when page content is short
+        */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+          }}
+        >
+          {/* Navbar — hides itself on /test page */}
+          <Navbar />
+
+          {/* Sidebar — opens/closes via Redux isSidebarOpen */}
+          <Sidebar />
+
+          {/* Main content — grows to fill available space */}
+          <Box component="main" sx={{ flexGrow: 1 }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/test" element={<Test />} />
+              <Route path="/results" element={<Results />} />
+              <Route path="/history" element={<History />} />
+            </Routes>
+          </Box>
+
+          {/* Footer - hides itself on /test page */}
+          <Footer />
+        </Box>
+
+        {/* 
+          Global components — placed OUTSIDE the flex column
+          They float above everything using position:fixed
+          Loader and Toast manage themselves via Redux
+          You never need to touch these again
+        */}
+        <Loader />
+        <Toast />
       </BrowserRouter>
     </ThemeProvider>
-  )
+  );
 }

@@ -9,18 +9,11 @@ import type {
 
 // Define the shape of test state
 interface TestState {
-  // Student info
   name: string;
   userId: string;
-
-  // Test answers
   answers: MCQAnswers;
   selfRatings: SelfRatings;
-
-  // API result
   result: CareerRecommendation | null;
-
-  // Async status
   status: 'idle' | 'loading' | 'success' | 'error';
   errorMessage: string | null;
 }
@@ -36,13 +29,8 @@ const initialState: TestState = {
 };
 
 // ── Async Thunk ────────────────────────────────────────────────────
-// This is where the API call to Spring Boot happens
-// createAsyncThunk handles loading/success/error states automatically
-export const submitTest = createAsyncThunk;
-(CareerRecommendation, // what it returns on success
-  AptitudeTestResult, // what you pass in when calling it
-  { rejectValue: string } > // what it returns on error
-    ('test/submit',
+export const submitTest = createAsyncThunk<CareerRecommendation,AptitudeTestResult,{ rejectValue: string }>(
+    'test/submit',
     async (payload, { rejectWithValue }) => {
       try {
         const result = await submitAptitudeTest(payload);
@@ -52,14 +40,13 @@ export const submitTest = createAsyncThunk;
           'Failed to connect to backend. Make sure Spring Boot is running.',
         );
       }
-    }));
+    });
 
 // ── Slice ──────────────────────────────────────────────────────────
 const testSlice = createSlice({
   name: 'test',
   initialState,
   reducers: {
-    // Save student info
     setStudentInfo: (
       state,
       action: PayloadAction<{ name: string; userId: string }>,
@@ -68,7 +55,6 @@ const testSlice = createSlice({
       state.userId = action.payload.userId;
     },
 
-    // Save MCQ answer for a specific category + question
     setAnswer: (
       state,
       action: PayloadAction<{
@@ -81,7 +67,6 @@ const testSlice = createSlice({
       state.answers[category][index] = value;
     },
 
-    // Save self rating for a category
     setSelfRating: (
       state,
       action: PayloadAction<{ category: keyof SelfRatings; value: number }>,
@@ -89,11 +74,9 @@ const testSlice = createSlice({
       state.selfRatings[action.payload.category] = action.payload.value;
     },
 
-    // Reset everything back to initial (retake test)
     resetTest: () => initialState,
   },
 
-  // extraReducers handles the 3 states of the async thunk automatically
   extraReducers: (builder) => {
     builder
       .addCase(submitTest.pending, (state) => {
@@ -114,6 +97,8 @@ const testSlice = createSlice({
 export const { setStudentInfo, setAnswer, setSelfRating, resetTest } =
   testSlice.actions;
 export default testSlice.reducer;
+
+
 
 /*
 

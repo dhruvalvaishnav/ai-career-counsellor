@@ -97,7 +97,7 @@ export default function Results() {
               <Box sx={{ width: 36, height: 36, borderRadius: 2, background: 'linear-gradient(135deg, #6C63FF, #00D4AA)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem' }}>🤖</Box>
               <Box>
                 <Typography variant="h6" sx={{ color: '#FFF', fontWeight: 700, lineHeight: 1 }}>AI Career Analysis</Typography>
-                <Typography sx={{ color: '#8888AA', fontSize: '0.75rem' }}>Powered by Groq · Llama 3.3 70B</Typography>
+                <Typography sx={{ color: '#8888AA', fontSize: '0.75rem' }}>Powered by AI · Where AI Meets Ambition</Typography>
               </Box>
             </Box>
             <Divider sx={{ borderColor: 'rgba(255,255,255,0.07)', mb: 3 }} />

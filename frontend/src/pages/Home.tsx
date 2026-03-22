@@ -25,7 +25,7 @@ const features = [
 const steps = [
   'Enter your name and student ID',
   'Answer aptitude questions across 3 categories',
-  'Submit and let Groq AI analyse your strengths',
+  'Submit and let AI analyse your strengths',
   'Get your top 3 personalised career recommendations',
 ]
 
@@ -112,7 +112,7 @@ export default function Home() {
       {/* Footer */}
       <Box sx={{ py: 4, textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <Typography sx={{ color: '#555577', fontSize: '0.85rem' }}>
-          © 2025 AI Career Counsellor · Built with React + Spring Boot + Groq AI
+          © 2026 AI Career Counsellor · Where AI meets Ambition. All rights reserved.
         </Typography>
       </Box>
     </Box>
