@@ -7,7 +7,7 @@ import com.aicareercounsellor.demo.service.KafkaProducerService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/kafka/v1")
 public class KafkaController {
 
     private final KafkaProducerService kafkaProducerService;

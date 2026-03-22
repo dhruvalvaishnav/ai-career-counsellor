@@ -14,3 +14,8 @@ public class Application {
 	}
 
 }
+/*
+curl -X POST http://localhost:8080/api/aptitude/submit \
+  -H "Content-Type: application/json" \
+  -d '{"userId":"student1","logicalReasoningScore":85,"verbalReasoningScore":60,"quantitativeScore":72}'
+ */

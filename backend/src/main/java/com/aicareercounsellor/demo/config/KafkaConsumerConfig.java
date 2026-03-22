@@ -1,6 +1,8 @@
 package com.aicareercounsellor.demo.config;
 
 import com.aicareercounsellor.demo.model.AptitudeTestResult;
+import com.aicareercounsellor.demo.model.CareerRecommendation;
+import com.aicareercounsellor.demo.service.CareerRecommendationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -8,33 +10,34 @@ import org.springframework.kafka.annotation.KafkaListener;
 @Configuration
 public class KafkaConsumerConfig {
 
-    @KafkaListener(topics = "test-topic", groupId = "career-counsellor-group")
-    public void processTestResult(String message) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            // Deserialize the JSON message into an AptitudeTestResult object
-            AptitudeTestResult testResult = objectMapper.readValue(message, AptitudeTestResult.class);
-            System.out.println("Processing Test Result: " + testResult);
+    private final CareerRecommendationService careerRecommendationService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-            // Simulate AI-based career suggestion logic
-            String careerSuggestion = suggestCareer(testResult);
-            System.out.println("Suggested Career: " + careerSuggestion);
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    // Constructor injection (best practice)
+    public KafkaConsumerConfig(CareerRecommendationService careerRecommendationService) {
+        this.careerRecommendationService = careerRecommendationService;
     }
 
-    private String suggestCareer(AptitudeTestResult testResult) {
-        if (testResult.getLogicalReasoningScore() > 80) {
-            return "Software Engineer";
-        } else if (testResult.getVerbalReasoningScore() > 80) {
-            return "Content Writer";
-        } else if (testResult.getQuantitativeScore() > 80) {
-            return "Data Scientist";
-        } else {
-            return "Generalist";
+    @KafkaListener(topics = "test-topic", groupId = "career-counsellor-group")
+    public void processTestResult(String message) {
+        try {
+            System.out.println("📥 Received aptitude test from Kafka: " + message);
+
+            // Deserialize JSON → AptitudeTestResult
+            AptitudeTestResult testResult = objectMapper.readValue(message, AptitudeTestResult.class);
+            System.out.println("✅ Parsed test result for user: " + testResult.getUserId());
+
+            // Call AI for career recommendation
+            System.out.println("🤖 Calling Groq AI for career recommendation...");
+            CareerRecommendation recommendation = careerRecommendationService.generateRecommendation(testResult);
+
+            // Log the result (later: save to DB or send to frontend via WebSocket)
+            System.out.println("🎯 Career Recommendation for " + recommendation.getUserId() + ":");
+            System.out.println(recommendation.getAiRecommendation());
+
+        } catch (Exception e) {
+            System.err.println("❌ Error processing test result: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
